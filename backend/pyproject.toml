@@ -16,7 +16,7 @@ dependencies = [
     "pillow==12.1.0",
     "pytz>=2025.2",
     "sqlmodel==0.0.31",
-    "yt-dlp[curl-cffi,default]==2025.12.8",
+    "yt-dlp[curl-cffi,default]==2026.1.29",
 ]
 
 [dependency-groups]
