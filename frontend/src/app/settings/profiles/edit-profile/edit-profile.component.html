@@ -297,7 +297,7 @@
       />
       <app-options-setting
         name="Always Search"
-        description="Enable this to always search for trailers, ignoring the youtube id received from Radarr."
+        description="Enable this to always search for trailers, ignoring the current youtube id."
         [options]="trueFalseOptions"
         [selectedOption]="profile()?.always_search"
         (optionChange)="profileService.updateSetting('always_search', $event)"
