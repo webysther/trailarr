@@ -49,11 +49,16 @@ Select the maximum duration of the trailers to download. Trailers with a duratio
 
 ## Always Search
 
+<!-- md:version:upd 0.6.10 -->
+
 | Type    | Required | Default | Valid Values  |
 |:-------:|:--------:|:-------:|:-------------:|
 | Boolean | Yes      | false   | true or false |
 
-Enable this setting to always search YouTube for trailers. If disabled, the app will only search YouTube if it cannot find a trailer in Radarr, Sonarr doesn't provide youtube trailer ids.
+Enable this setting to always search YouTube for trailers. If disabled, the app will only search YouTube if it cannot find a trailer in Radarr; Sonarr doesn't provide youtube trailer ids.
+
+!!! note
+    Enabling this will ignore the `YouTube Trailer ID` even if you manually updated it for a media item.
 
 ## Include Words in Title
 

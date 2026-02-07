@@ -19,7 +19,14 @@
     <!-- #region Name -->
     <div class="input-group">
       <label for="name">Name</label>
-      <input id="name" autocapitalize="words" autocomplete="off" [field]="connectionForm.name" placeholder="Connection Name" type="text" />
+      <input
+        id="name"
+        autocapitalize="words"
+        autocomplete="off"
+        [formField]="connectionForm.name"
+        placeholder="Connection Name"
+        type="text"
+      />
       @if (connectionForm.name().touched() && connectionForm.name().invalid()) {
         @for (error of connectionForm.name().errors(); track error) {
           <p class="invalid-text">{{ error.message }}</p>
@@ -36,7 +43,7 @@
         <div class="options-bar" role="radiogroup" aria-labelledby="arrtype_label">
           @for (option of arrOptions; track option) {
             <label class="option-label" [class.option__selected]="option === connectionCreate().arr_type">
-              <input type="radio" [id]="'arrtype_' + option + '_option'" [value]="option" [field]="connectionForm.arr_type" />
+              <input type="radio" [id]="'arrtype_' + option + '_option'" [value]="option" [formField]="connectionForm.arr_type" />
               <span class="option-name">{{ option | uppercase }}</span>
             </label>
           }
@@ -50,7 +57,7 @@
         <div class="options-bar" role="radiogroup" aria-labelledby="monitorType_label">
           @for (option of monitorOptions; track option) {
             <label class="option-label" [class.option__selected]="option === connectionCreate().monitor">
-              <input type="radio" [id]="'monitorType_' + option + '_option'" [value]="option" [field]="connectionForm.monitor" />
+              <input type="radio" [id]="'monitorType_' + option + '_option'" [value]="option" [formField]="connectionForm.monitor" />
               <span class="option-name">{{ option | uppercase }}</span>
             </label>
           }
@@ -64,7 +71,13 @@
     <!-- #region URL -->
     <div class="input-group">
       <label for="url">Server URL</label>
-      <input id="url" autocomplete="off" [field]="connectionForm.url" placeholder="Server URL Ex: http://192.168.0.15:6969" type="url" />
+      <input
+        id="url"
+        autocomplete="off"
+        [formField]="connectionForm.url"
+        placeholder="Server URL Ex: http://192.168.0.15:6969"
+        type="url"
+      />
       @if (connectionForm.url().touched() && connectionForm.url().invalid()) {
         @for (error of connectionForm.url().errors(); track error) {
           <p class="invalid-text">{{ error.message }}</p>
@@ -76,7 +89,7 @@
       <input
         id="externalUrl"
         autocomplete="off"
-        [field]="connectionForm.external_url"
+        [formField]="connectionForm.external_url"
         placeholder="External URL Ex: http://radarr.mydomain.com"
         type="url"
       />
@@ -91,7 +104,7 @@
     <!-- #region API Key -->
     <div class="input-group">
       <label for="apiKey">API Key</label>
-      <input id="apiKey" autocomplete="off" [field]="connectionForm.api_key" placeholder="API Key" type="text" />
+      <input id="apiKey" autocomplete="off" [formField]="connectionForm.api_key" placeholder="API Key" type="text" />
       @if (connectionForm.api_key().touched() && connectionForm.api_key().invalid()) {
         @for (error of connectionForm.api_key().errors(); track error) {
           <p class="invalid-text">{{ error.message }}</p>
@@ -115,7 +128,7 @@
               <input
                 [id]="'path_from' + i"
                 type="text"
-                [field]="mapping.path_from"
+                [formField]="mapping.path_from"
                 placeholder="Arr Internal Path"
                 [readOnly]="true"
                 autocomplete="off"
@@ -124,7 +137,13 @@
             <div class="input-group">
               <label [for]="'path_to' + i">Path To</label>
               <div class="input-wrapper">
-                <input [id]="'path_to' + i" type="text" [field]="mapping.path_to" placeholder="Trailarr Internal Path" autocomplete="off" />
+                <input
+                  [id]="'path_to' + i"
+                  type="text"
+                  [formField]="mapping.path_to"
+                  placeholder="Trailarr Internal Path"
+                  autocomplete="off"
+                />
                 <button class="tertiary folder-icon" (click)="openPathSelectDialog(i)" type="button" title="Select Path">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
                     <path

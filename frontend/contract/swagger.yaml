@@ -3859,6 +3859,12 @@ components:
           minimum: 0.0
           title: Priority
           default: 0
+        retry_count:
+          type: integer
+          maximum: 10.0
+          minimum: 0.0
+          title: Retry Count
+          default: 2
         file_format:
           type: string
           title: File Format
@@ -3980,6 +3986,12 @@ components:
           minimum: 0.0
           title: Priority
           default: 0
+        retry_count:
+          type: integer
+          maximum: 10.0
+          minimum: 0.0
+          title: Retry Count
+          default: 2
         file_format:
           type: string
           title: File Format

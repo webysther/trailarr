@@ -182,7 +182,7 @@ async def _process_single_media_item(
                 f" using profile: {_profile_name}"
             )
             download_successful = await trailer_downloader.download_trailer(
-                media, profile
+                media, profile, profile.retry_count
             )
             if download_successful:
                 successful_downloads += 1

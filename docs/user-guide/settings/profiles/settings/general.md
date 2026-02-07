@@ -31,6 +31,21 @@ This setting determines the order in which profile is applied when multiple prof
     If two profiles have the same priority, any one of them can be used, so it is recommended to use unique priorities for each profile.
 
 
+## Retry Count
+
+<!-- md:version:add 0.6.10 -->
+
+| Type    | Required | Default | Valid Values  |
+|:-------:|:--------:|:-------:|:-------------:|
+| Integer | Yes      | 2       | 0 to 9        |
+
+
+This setting determines how many times Trailarr should retry downloading a trailer if the previous download attempts failed. A failed download can occur due to various reasons such as network issues, YouTube restrictions, or problems with the video itself. By default, Trailarr will retry downloading a trailer 2 times before giving up. 
+
+Setting this value to `0` will disable retries and Trailarr will only attempt to download a trailer once. 
+
+Setting this value to a higher number will allow Trailarr to make multiple attempts to download a trailer, increasing the chances of a successful download in case of temporary issues.
+
 ## Stop Monitoring
 
 | Type    | Required | Default | Valid Values  |

@@ -11,7 +11,7 @@ import {
   viewChild,
   ViewContainerRef,
 } from '@angular/core';
-import {applyEach, Field, form, maxLength, minLength, pattern, readonly, required, schema} from '@angular/forms/signals';
+import {applyEach, form, FormField, maxLength, minLength, pattern, readonly, required, schema} from '@angular/forms/signals';
 import {Router} from '@angular/router';
 import {ArrType, ConnectionCreate, MonitorType, PathMappingCreate} from 'src/app/models/connection';
 import {ConnectionService} from 'src/app/services/connection.service';
@@ -27,7 +27,7 @@ const pathMappingSchema = schema<PathMappingCreate>((schema) => {
 
 @Component({
   selector: 'app-edit-connection2',
-  imports: [Field, HelpLinkIconComponent, LoadIndicatorComponent, UpperCasePipe],
+  imports: [FormField, HelpLinkIconComponent, LoadIndicatorComponent, UpperCasePipe],
   templateUrl: './edit-connection.component.html',
   styleUrl: './edit-connection.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

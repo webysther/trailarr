@@ -10,7 +10,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import {Field, FieldTree, form, submit} from '@angular/forms/signals';
+import {FieldTree, form, FormField, submit} from '@angular/forms/signals';
 import {firstValueFrom} from 'rxjs';
 import {DisplayTitlePipe} from 'src/app/helpers/display-title.pipe';
 import {allFilterKeys, CustomFilter, CustomFilterCreate, FilterCreate, FilterType} from 'src/app/models/customfilter';
@@ -20,7 +20,7 @@ import {customFilterSchema, getFilterConditions, getFilterValueType, newCustomFi
 
 @Component({
   selector: 'edit-filter-dialog',
-  imports: [DisplayTitlePipe, HelpLinkIconComponent, Field],
+  imports: [DisplayTitlePipe, HelpLinkIconComponent, FormField],
   templateUrl: './edit-filter-dialog.component.html',
   styleUrl: './edit-filter-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

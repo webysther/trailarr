@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, effect, ElementRef, HostListener, inject, Renderer2, signal} from '@angular/core';
-import {debounce, Field, form} from '@angular/forms/signals';
+import {debounce, form, FormField} from '@angular/forms/signals';
 import {Router, RouterLink} from '@angular/router';
 import {SettingsService} from 'src/app/services/settings.service';
 import {WebsocketService} from 'src/app/services/websocket.service';
@@ -9,7 +9,7 @@ import {MediaService} from '../../services/media.service';
 
 @Component({
   selector: 'app-topnav',
-  imports: [RouterLink, Field, RouterLink],
+  imports: [RouterLink, FormField, RouterLink],
   templateUrl: './topnav.component.html',
   styleUrl: './topnav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

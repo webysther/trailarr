@@ -33,7 +33,7 @@ async def batch_download_task(
             f"Downloading trailer {downloading_count}/{download_count}"
         )
         try:
-            await download_trailer(media, profile)
+            await download_trailer(media, profile, profile.retry_count)
         except DownloadFailedError as e:
             logger.exception(e)
         except Exception as e:
