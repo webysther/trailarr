@@ -49,6 +49,8 @@ Select the maximum duration of the trailers to download. Trailers with a duratio
 
 ## Always Search
 
+<!-- md:version:upd 0.6.10 -->
+
 | Type    | Required | Default | Valid Values  |
 |:-------:|:--------:|:-------:|:-------------:|
 | Boolean | Yes      | false   | true or false |

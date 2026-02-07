@@ -33,6 +33,8 @@ This setting determines the order in which profile is applied when multiple prof
 
 ## Retry Count
 
+<!-- md:version:add 0.6.10 -->
+
 | Type    | Required | Default | Valid Values  |
 |:-------:|:--------:|:-------:|:-------------:|
 | Integer | Yes      | 2       | 0 to 9        |
