@@ -70,6 +70,22 @@
         [selectedOption]="profile()?.stop_monitoring"
         (optionChange)="profileService.updateSetting('stop_monitoring', $event)"
       />
+      <app-text-setting
+        name="Retry Count"
+        description="Download retry count when a download fails while using this profile."
+        descriptionExtra="Default is 2. Minimum is 0 (only 1 attempt). Maximum is 9 (10 attempts)."
+        [isNumberType]="true"
+        [isLongInput]="false"
+        [placeholder]="'Retry Count'"
+        [autocomplete]="'off'"
+        [minLength]="1"
+        [maxLength]="1"
+        [minValue]="0"
+        [maxValue]="9"
+        [value]="profile()?.retry_count ?? 2"
+        [disabled]="false"
+        (onSubmit)="profileService.updateSetting('retry_count', $event)"
+      />
     </div>
   </details>
 </section>

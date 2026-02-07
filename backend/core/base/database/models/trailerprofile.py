@@ -66,6 +66,12 @@ class _TrailerProfileBase(AppSQLModel):
         le=1000,
         sa_column=Column(Integer, server_default="0", nullable=False),
     )
+    retry_count: int = Field(
+        default=2,
+        ge=0,
+        le=9,
+        sa_column=Column(Integer, server_default="2", nullable=False),
+    )
     # File settings
     file_format: str = "mkv"
     file_name: str = "{title} ({year})-trailer.{ext}"
