@@ -1737,6 +1737,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#retry-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retry Count
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#stop-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2526,6 +2537,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#retry-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retry Count
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#stop-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2726,6 +2748,29 @@
 <p class="admonition-title">Warning</p>
 <p>If two profiles have the same priority, any one of them can be used, so it is recommended to use unique priorities for each profile.</p>
 </div>
+<h2 id="retry-count">Retry Count</h2>
+<p><span class="twemoji golden" title="Added in v0.6.10"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m19 1-1.26 2.75L15 5l2.74 1.26L19 9l1.25-2.74L23 5l-2.75-1.25M9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5M19 15l-1.26 2.74L15 19l2.74 1.25L19 23l1.25-2.75L23 19l-2.75-1.26"></path></svg></span> <a href="../../../../../release-notes/2026/#v0610-beta-february-07-2026">v0.6.10</a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Required</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Valid Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Integer</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0 to 9</td>
+</tr>
+</tbody>
+</table>
+<p>This setting determines how many times Trailarr should retry downloading a trailer if the previous download attempts failed. A failed download can occur due to various reasons such as network issues, YouTube restrictions, or problems with the video itself. By default, Trailarr will retry downloading a trailer 2 times before giving up. </p>
+<p>Setting this value to <code>0</code> will disable retries and Trailarr will only attempt to download a trailer once. </p>
+<p>Setting this value to a higher number will allow Trailarr to make multiple attempts to download a trailer, increasing the chances of a successful download in case of temporary issues.</p>
 <h2 id="stop-monitoring">Stop Monitoring</h2>
 <table>
 <thead>
@@ -2782,7 +2827,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime" title="October 31, 2025 20:47:49 UTC">October 31, 2025 20:47:49</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime" title="February 7, 2026 21:33:17 UTC">February 7, 2026 21:33:17</span>
   </span>
 
     
