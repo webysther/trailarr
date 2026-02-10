@@ -110,7 +110,7 @@ def _get_ytdl_options(profile: TrailerProfileRead) -> list[str]:
 
     # Add remote components
     _options.append("--remote-components")
-    _options.append("ejs:deno")
+    _options.append("ejs:github")
 
     # Subtitle options
     if profile.subtitles_enabled:
