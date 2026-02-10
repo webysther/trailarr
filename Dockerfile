@@ -38,6 +38,12 @@ COPY ./backend/uv.lock /app/backend/uv.lock
 WORKDIR /app/backend
 RUN uv pip install --no-cache --native-tls --system -r pyproject.toml
 
+# Install Deno (required for yt-dlp-ejs)
+RUN curl -fsSL https://deno.land/install.sh | sh
+
+# Ensure Deno binary is in PATH for subsequent stages
+ENV PATH="/root/.deno/bin:${PATH}"
+
 # ARG APP_VERSION, will be set during build by github actions
 ARG APP_VERSION=0.6.1-dev
 

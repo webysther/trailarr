@@ -108,6 +108,10 @@ def _get_ytdl_options(profile: TrailerProfileRead) -> list[str]:
     _options.append(_format)
     logger.debug(f"Using format: {_format}")
 
+    # Add remote components
+    _options.append("--remote-components")
+    _options.append("ejs:deno")
+
     # Subtitle options
     if profile.subtitles_enabled:
         _options.append("--write-auto-subs")
