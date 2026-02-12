@@ -14,7 +14,6 @@ import sqlmodel
 import sqlmodel.sql.sqltypes
 from app_logger import ModuleLogger
 
-
 # revision identifiers, used by Alembic.
 revision: str = "ae0d134607f9"
 down_revision: Union[str, None] = "4cfe424ef7b3"
@@ -39,6 +38,7 @@ def upgrade() -> None:
                 "YOUTUBE_ID_CHANGED",
                 "TRAILER_DOWNLOADED",
                 "TRAILER_DELETED",
+                "TRAILER_DETECTED",
                 "DOWNLOAD_SKIPPED",
                 name="eventtype",
                 native_enum=False,
@@ -48,7 +48,7 @@ def upgrade() -> None:
         sa.Column(
             "source",
             sa.Enum("USER", "SYSTEM", name="eventsource", native_enum=False),
-            server_default=sa.text("'user'"),
+            server_default=sa.text("'USER'"),
             nullable=False,
         ),
         sa.Column(

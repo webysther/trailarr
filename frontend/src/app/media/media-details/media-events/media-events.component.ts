@@ -57,7 +57,7 @@ export class MediaEventsComponent {
       case EventType.TRAILER_DOWNLOADED:
         return event.new_value ? `Downloaded from ${event.new_value}` : 'Trailer downloaded';
       case EventType.TRAILER_DELETED:
-        return event.old_value ? `Deleted: ${event.old_value}` : 'Trailer deleted';
+        return event.new_value ? `Deleted: ${event.new_value}` : 'Trailer deleted';
       case EventType.DOWNLOAD_SKIPPED:
         return event.new_value || 'Download was skipped';
       default:

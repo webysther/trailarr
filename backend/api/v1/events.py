@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 
 from api.v1.models import ErrorResponse
 from app_logger import ModuleLogger
+from backend.exceptions import ItemNotFoundError
 import core.base.database.manager.event as event_manager
 from core.base.database.models.event import EventRead, EventSource, EventType
 
@@ -67,9 +68,15 @@ async def get_event_by_id(event_id: int) -> EventRead:
     """
     try:
         return event_manager.read(event_id)
-    except Exception as e:
+    except ItemNotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=str(e)
+        )
+    except Exception as e:
+        logger.error(f"Error fetching event with ID {event_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred while fetching the event.",
         )
 
 

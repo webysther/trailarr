@@ -131,9 +131,9 @@
 </div>
 
 <!-- Traceback Dialog -->
-@if (tracebackLog(); as log) {
-  <div class="traceback-overlay" (click)="closeTraceback()">
-    <div class="traceback-dialog" (click)="$event.stopPropagation()">
+<dialog #tracebackDialog class="traceback-dialog" (click)="onDialogClick($event)">
+  @if (tracebackLog(); as log) {
+    <div class="traceback-content" (click)="$event.stopPropagation()">
       <div class="traceback-header">
         <div class="traceback-title">
           <span class="traceback-level" [class]="log.level.toLowerCase()">{{ log.level }}</span>
@@ -152,5 +152,5 @@
       </div>
       <pre class="traceback-code">{{ log.traceback }}</pre>
     </div>
-  </div>
-}
+  }
+</dialog>

@@ -50,7 +50,7 @@ class EventBase(AppSQLModel):
         default=EventSource.USER,
         sa_column=Column(
             sa_Enum(EventSource, native_enum=False),
-            server_default=text("'user'"),
+            server_default=text("'USER'"),
             nullable=False,
             index=True,
         ),

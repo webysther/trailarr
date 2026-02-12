@@ -1,5 +1,7 @@
 # Events
 
+<!-- md:version:add 0.7.0 -->
+
 Trailarr tracks important events for each media item, giving you visibility into what's happening with your trailers. Events help you understand when and why changes occur to your media library.
 
 !!! info "Where to View Events"
@@ -150,10 +152,10 @@ Logged when Trailarr skips downloading a trailer for a media item.
 
 | Reason | Description |
 |--------|-------------|
-| `no_folder_path` | Media item doesn't have a folder path set |
-| `folder_not_found` | Media folder doesn't exist on disk |
-| `already_downloaded` | A trailer already exists for this media |
-| `unmonitored` | Media item is not monitored for trailer downloads |
+| `Missing folder path` | Media item doesn't have a folder path set |
+| `Folder not found` | Media folder doesn't exist on disk |
+| `Already downloaded` | A trailer already exists for this media |
+| `Unmonitored` | Media item is not monitored for trailer downloads |
 
 ---
 
