@@ -2,9 +2,9 @@ from fastapi import APIRouter, HTTPException, status
 
 from api.v1.models import ErrorResponse
 from app_logger import ModuleLogger
-from backend.exceptions import ItemNotFoundError
 import core.base.database.manager.event as event_manager
 from core.base.database.models.event import EventRead, EventSource, EventType
+from exceptions import ItemNotFoundError
 
 logger = ModuleLogger("EventsAPI")
 
