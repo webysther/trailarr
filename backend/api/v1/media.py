@@ -5,8 +5,10 @@ from api.v1.models import BatchUpdate, ErrorResponse, SearchMedia
 from app_logger import ModuleLogger
 from core.base.database.manager import trailerprofile
 import core.base.database.manager.download as download_manager
+import core.base.database.manager.event as event_manager
 import core.base.database.manager.filefolderinfo as files_manager
 import core.base.database.manager.media as media_manager
+from core.base.database.models.event import EventSource
 from core.base.database.models.filefolderinfo import FileFolderInfoRead
 from core.base.database.models.download import DownloadRead
 from core.base.database.models.media import MediaRead
@@ -320,8 +322,22 @@ async def monitor_media(media_id: int, monitor: bool = True) -> str:
     """
     logger.info(f"Monitoring media with ID: {media_id}")
     try:
+        # Get old monitor status for event tracking
+        media = media_manager.read(media_id)
+        old_monitor = media.monitor
+
         msg, is_success = media_manager.update_monitoring(media_id, monitor)
         logger.info(msg)
+
+        # Track monitor_changed event if status actually changed
+        if is_success:
+            event_manager.track_monitor_changed(
+                media_id=media_id,
+                old_monitor=old_monitor,
+                new_monitor=monitor,
+                source=EventSource.USER,
+            )
+
         await websockets.ws_manager.broadcast(
             msg, "Success" if is_success else "Error", reload="media"
         )
@@ -376,7 +392,22 @@ async def update_yt_id(media_id: int, yt_id: str) -> str:
             detail="Invalid YouTube ID!",
         )
     try:
+        # Get old YouTube ID for event tracking
+        media = media_manager.read(media_id)
+        old_yt_id = media.youtube_trailer_id
+
         media_manager.update_ytid(media_id, yt_id)
+
+        # Track youtube_id_changed event if ID actually changed
+        if old_yt_id != yt_id:
+            event_manager.track_youtube_id_changed(
+                media_id=media_id,
+                old_yt_id=old_yt_id,
+                new_yt_id=yt_id,
+                source=EventSource.USER,
+                source_detail="UserInput",
+            )
+
         msg = f"YouTube ID for media with ID: {media_id} has been updated."
         logger.info(msg)
         await websockets.ws_manager.broadcast(msg, "Success", reload="media")
@@ -411,6 +442,13 @@ async def search_for_trailer(media_id: int, profile_id: int) -> str:
 
     if yt_id := trailer_search.search_yt_for_trailer(media, profile):
         media_manager.update_ytid(media_id, yt_id)
+        event_manager.track_youtube_id_changed(
+            media_id=media_id,
+            old_yt_id=media.youtube_trailer_id,
+            new_yt_id=yt_id,
+            source=EventSource.USER,
+            source_detail="UserSearch",
+        )
         msg = (
             f"Trailer found for media '{media.title}' [{media.id}] as"
             f" ({yt_id})"
@@ -464,6 +502,14 @@ async def delete_media_trailer(media_id: int) -> str:
             await websockets.ws_manager.broadcast(msg, "Error")
             return msg
         media_manager.update_trailer_exists(media_id, False)
+
+        # Track trailer_deleted event
+        event_manager.track_trailer_deleted(
+            media_id=media_id,
+            reason="user_request",
+            source=EventSource.USER,
+        )
+
         msg = (
             f"Trailer for media '{media.title}' [{media.id}] has been deleted."
         )

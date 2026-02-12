@@ -26,6 +26,7 @@ import {WebsocketService} from '../../services/websocket.service';
 import {ProfileSelectDialogComponent} from '../dialogs/profile-select-dialog/profile-select-dialog.component';
 import {DownloadsComponent} from './downloads/downloads.component';
 import {FilesComponent} from './files/files.component';
+import {MediaEventsComponent} from './media-events/media-events.component';
 
 @Component({
   selector: 'app-media-details',
@@ -36,6 +37,7 @@ import {FilesComponent} from './files/files.component';
     FilesComponent,
     FormsModule,
     LoadIndicatorComponent,
+    MediaEventsComponent,
     RemoveStartingSlashPipe,
     RouterLink,
     TitleCasePipe,
