@@ -39,7 +39,10 @@ export class LogsComponent implements OnInit {
 
   // Component properties
   searchForm = new FormControl();
-  displayCount = signal(100); // Default display count for logs
+  displayCount = signal(100);
+
+  // Dialog state for traceback
+  tracebackLog = signal<AppLogRecordRead | null>(null);
 
   // Component resources
   protected readonly allLogs = httpResource<AppLogRecordRead[]>(
@@ -126,6 +129,14 @@ export class LogsComponent implements OnInit {
     // Extract media ID from log message if present (look for " [<digits>] ")
     const mediaIdMatch = log.message?.match(/\[(\d+)\]/);
     return mediaIdMatch ? parseInt(mediaIdMatch[1], 10) : null;
+  }
+
+  openTraceback(log: AppLogRecordRead) {
+    this.tracebackLog.set(log);
+  }
+
+  closeTraceback() {
+    this.tracebackLog.set(null);
   }
 
   sortLogsByDateAsc(a: AppLogRecordRead, b: AppLogRecordRead): number {

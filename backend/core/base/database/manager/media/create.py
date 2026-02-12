@@ -3,6 +3,8 @@ from sqlmodel import Session, select
 
 from . import base
 import core.base.database.manager.connection as connection_manager
+import core.base.database.manager.event as event_manager
+from core.base.database.models.event import EventSource
 from core.base.database.models.media import (
     Media,
     MediaCreate,
@@ -102,7 +104,18 @@ def _create_or_update(
         )
         db_media.sqlmodel_update(media_update_data)
         _updated = False
-        if base.has_updated(
+        if not db_media.youtube_trailer_id and media_create.youtube_trailer_id:
+            event_manager.track_youtube_id_changed(
+                media_id=db_media.id,  # type: ignore
+                old_yt_id=db_media.youtube_trailer_id,
+                new_yt_id=media_create.youtube_trailer_id,
+                source=EventSource.SYSTEM,
+                source_detail="ConnectionRefresh",
+                session=session,
+            )
+            db_media.youtube_trailer_id = media_create.youtube_trailer_id
+            _updated = True
+        elif base.has_updated(
             db_media,
             media_create,
             ignore_attrs={
@@ -123,6 +136,8 @@ def _create_or_update(
         # Doesn't exist, Create it
         db_media = Media.model_validate(media_create)
         session.add(db_media)
+        # youtube_id tracking for new media is done in connection_manager
+        # after media_added event to ensure correct event ordering
         return db_media, True, False
 
 

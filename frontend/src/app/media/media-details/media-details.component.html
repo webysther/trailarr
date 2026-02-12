@@ -278,6 +278,10 @@
   <div class="media-details-container">
     <media-files [mediaId]="mediaId()"></media-files>
   </div>
+  <!-- Show Media Events -->
+  <div class="media-details-container">
+    <media-events [mediaId]="mediaId()"></media-events>
+  </div>
 }
 
 <dialog #deleteDialog (click)="closeDeleteDialog()">

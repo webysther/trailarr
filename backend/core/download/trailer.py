@@ -3,7 +3,9 @@ import os
 
 from api.v1 import websockets
 from app_logger import ModuleLogger
+import core.base.database.manager.event as event_manager
 import core.base.database.manager.media as media_manager
+from core.base.database.models.event import EventSource
 from core.base.database.models.helpers import MediaUpdateDC
 from core.base.database.models.media import MediaRead, MonitorStatus
 from core.base.database.models.trailerprofile import TrailerProfileRead
@@ -59,6 +61,27 @@ def __update_media_status(
     else:
         # Handle other statuses if needed
         return None
+
+    # Track monitor change event if monitor status changed
+    if update.monitor != media.monitor:
+        event_manager.track_monitor_changed(
+            media_id=media.id,
+            old_monitor=media.monitor,
+            new_monitor=update.monitor,
+            source=EventSource.SYSTEM,
+            source_detail="TrailerDownload",
+        )
+
+    # Track youtube ID change event if yt_id changed
+    if update.yt_id is not None and update.yt_id != media.youtube_trailer_id:
+        event_manager.track_youtube_id_changed(
+            media_id=media.id,
+            old_yt_id=media.youtube_trailer_id,
+            new_yt_id=update.yt_id,
+            source=EventSource.SYSTEM,
+            source_detail="TrailerDownload",
+        )
+
     media_manager.update_media_status(update)
     return None
 
@@ -133,6 +156,15 @@ async def download_trailer(
         await record_new_trailer_download(
             media, profile.id, final_path, video_id
         )
+
+        # Track trailer_downloaded event
+        event_manager.track_trailer_downloaded(
+            media_id=media.id,
+            yt_id=video_id,
+            source=EventSource.SYSTEM,
+            source_detail="TrailerDownload",
+        )
+
         msg = (
             f"Trailer downloaded successfully for {media.title} [{media.id}]"
             f" from ({video_id})"

@@ -5,7 +5,9 @@ from typing import Any, AsyncGenerator, Callable, Protocol
 
 from app_logger import ModuleLogger
 from config.settings import app_settings
+import core.base.database.manager.event as event_manager
 import core.base.database.manager.media as media_manager
+from core.base.database.models.event import EventSource
 from core.base.database.models.helpers import MediaReadDC
 from core.files_handler import FilesHandler
 from core.base.database.models.connection import ConnectionRead, MonitorType
@@ -254,6 +256,13 @@ class BaseConnectionManager(ABC):
             self.media_ids.append(media_read.id)
             if created:
                 self.created_count += 1
+                # Track all events for new media (added, youtube_id, monitor)
+                event_manager.track_media_added(
+                    media=media_read,
+                    connection_name=self.connection_name,
+                    source=EventSource.SYSTEM,
+                    source_detail="ConnectionRefresh",
+                )
             if updated:
                 self.updated_count += 1
             media_read_dc = MediaReadDC(
@@ -360,6 +369,27 @@ class BaseConnectionManager(ABC):
                     media_read.created,
                     trailer_exists,
                     media_read.arr_monitored,
+                )
+            # Track monitor change event if monitor status changed
+            if monitor_media != media_read.monitor:
+                event_manager.track_monitor_changed(
+                    media_id=media_read.id,
+                    old_monitor=media_read.monitor,
+                    new_monitor=monitor_media,
+                    source=EventSource.SYSTEM,
+                    source_detail="ConnectionRefresh",
+                )
+            # Track trailer detected if existing media now has a trailer
+            trailer_newly_detected = (
+                not media_read.created
+                and trailer_exists
+                and not media_read.trailer_exists
+            )
+            if trailer_newly_detected:
+                event_manager.track_trailer_detected(
+                    media_id=media_read.id,
+                    source=EventSource.SYSTEM,
+                    source_detail="ConnectionRefresh",
                 )
             update_list.append((media_read.id, monitor_media, trailer_exists))
         # Update the database with trailer and monitoring status
