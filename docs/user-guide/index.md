@@ -12,6 +12,7 @@ Here's an overview of what you'll find:
     - **Series**: Shows a list of Series (TV Shows) from all Sonarr connections.
     - **[Media Details](./library/media-details/index.md)**: In-depth information about individual movies or series.
 
+- **[Events](./events/index.md)**: Track important events for your media items, including trailer downloads, deletions, and status changes.
 - **[Tasks](./tasks/index.md)**: View and manage scheduled tasks and the current task queue.
 - **[Logs](./logs/index.md)**: Check recent application logs for monitoring and troubleshooting.
 - **[Settings](./settings/index.md)**: Configure Trailarr to your liking.

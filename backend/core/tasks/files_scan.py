@@ -1,8 +1,10 @@
 import os
 from app_logger import ModuleLogger
+import core.base.database.manager.event as event_manager
 import core.base.database.manager.filefolderinfo as files_manager
 import core.base.database.manager.download as download_manager
 import core.base.database.manager.media as media_manager
+from core.base.database.models.event import EventSource
 from core.base.database.models.media import MediaRead
 from core.download.trailers.service import record_new_trailer_download
 from core.files.media_scanner import MediaScanner
@@ -11,7 +13,9 @@ logger = ModuleLogger("TrailersFilesScan")
 
 
 async def scan_media_folder(
-    media: MediaRead, scanner: MediaScanner | None = None
+    media: MediaRead,
+    scanner: MediaScanner | None = None,
+    user_initiated: bool = True,
 ) -> tuple[int, int]:
     """Scan the media folder to find media files and trailers \
         and update the database with download records.
@@ -44,6 +48,7 @@ async def scan_media_folder(
 
     # Check if any trailer paths are new downloads
     new_count = 0
+    _source = EventSource.USER if user_initiated else EventSource.SYSTEM
     for t_path in trailer_paths:
         if t_path in existing_paths:
             # Already recorded as download
@@ -55,6 +60,11 @@ async def scan_media_folder(
             f" [{media.id}]"
         )
         await record_new_trailer_download(media, 0, t_path)
+        event_manager.track_trailer_detected(
+            media_id=media.id,
+            source=_source,
+            source_detail="FilesScan",
+        )
         if not media.trailer_exists:
             media.trailer_exists = True
             media_manager.update_trailer_exists(media.id, True)
@@ -72,6 +82,12 @@ async def scan_media_folder(
                 f" '{media.title}' [{media.id}]"
             )
             download_manager.mark_as_deleted(download.id)
+            event_manager.track_trailer_deleted(
+                media_id=media.id,
+                reason="file_not_found",
+                source=_source,
+                source_detail="FilesScan",
+            )
 
     return new_count, missing_count
 
@@ -94,7 +110,9 @@ async def scan_all_media_folders() -> None:
     for media in all_media():
         try:
             media_count += 1
-            new, missing = await scan_media_folder(media, scanner)
+            new, missing = await scan_media_folder(
+                media, scanner, user_initiated=False
+            )
             new_trailers += new
             missing_trailers += missing
         except Exception as e:

@@ -1,6 +1,6 @@
 import {AsyncPipe, TitleCasePipe} from '@angular/common';
 import {httpResource} from '@angular/common/http';
-import {ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnInit, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, DestroyRef, effect, ElementRef, inject, OnInit, signal, viewChild} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, RouterLink} from '@angular/router';
@@ -39,7 +39,11 @@ export class LogsComponent implements OnInit {
 
   // Component properties
   searchForm = new FormControl();
-  displayCount = signal(100); // Default display count for logs
+  displayCount = signal(100);
+
+  // Dialog state for traceback
+  tracebackLog = signal<AppLogRecordRead | null>(null);
+  private readonly tracebackDialog = viewChild<ElementRef<HTMLDialogElement>>('tracebackDialog');
 
   // Component resources
   protected readonly allLogs = httpResource<AppLogRecordRead[]>(
@@ -126,6 +130,23 @@ export class LogsComponent implements OnInit {
     // Extract media ID from log message if present (look for " [<digits>] ")
     const mediaIdMatch = log.message?.match(/\[(\d+)\]/);
     return mediaIdMatch ? parseInt(mediaIdMatch[1], 10) : null;
+  }
+
+  openTraceback(log: AppLogRecordRead) {
+    this.tracebackLog.set(log);
+    this.tracebackDialog()?.nativeElement.showModal();
+  }
+
+  closeTraceback() {
+    this.tracebackDialog()?.nativeElement.close();
+    this.tracebackLog.set(null);
+  }
+
+  onDialogClick(event: MouseEvent) {
+    const dialog = this.tracebackDialog()?.nativeElement;
+    if (event.target === dialog) {
+      this.closeTraceback();
+    }
   }
 
   sortLogsByDateAsc(a: AppLogRecordRead, b: AppLogRecordRead): number {

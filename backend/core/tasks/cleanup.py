@@ -3,7 +3,9 @@ from app_logger import ModuleLogger
 from config.settings import app_settings
 from config.logs import manager as logs_manager
 import core.base.database.manager.download as download_manager
+import core.base.database.manager.event as event_manager
 import core.base.database.manager.media as media_manager
+from core.base.database.models.event import EventSource
 from core.download import video_analysis
 from core.files_handler import FilesHandler
 
@@ -74,6 +76,13 @@ async def trailer_cleanup():
                 )
                 download.file_exists = False
                 download_manager.mark_as_deleted(download.id)
+                # Track trailer_deleted event for missing file
+                event_manager.track_trailer_deleted(
+                    media_id=media.id,
+                    reason="file_not_found",
+                    source=EventSource.SYSTEM,
+                    source_detail="CleanupTask",
+                )
                 continue
 
             # Verify the trailer has audio and video streams
@@ -94,6 +103,13 @@ async def trailer_cleanup():
                     )
                     await delete_trailer(_path, download.id)
                     download.file_exists = False
+                    # Track trailer_deleted event for corrupted file
+                    event_manager.track_trailer_deleted(
+                        media_id=media.id,
+                        reason="corrupted",
+                        source=EventSource.SYSTEM,
+                        source_detail="CleanupTask",
+                    )
                 else:
                     logger.warning(
                         "Corrupted trailer found (missing audio/video) for"

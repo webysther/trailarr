@@ -14,7 +14,6 @@ from .search import search
 from .update import (
     update_media_image,
     update_media_status,
-    update_monitor_and_trailer_exists,
     update_monitor_and_trailer_exists_bulk,
     update_monitoring,
     update_monitoring_bulk,
@@ -39,7 +38,6 @@ __all__ = [
     "search",
     "update_media_image",
     "update_media_status",
-    "update_monitor_and_trailer_exists",
     "update_monitor_and_trailer_exists_bulk",
     "update_monitoring",
     "update_monitoring_bulk",

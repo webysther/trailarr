@@ -134,6 +134,7 @@ nav:
     - Library: 
       - user-guide/library/index.md
       - Media Details: user-guide/library/media-details/index.md
+    - Events: user-guide/events/index.md
     - Tasks: user-guide/tasks/index.md
     - Logs: user-guide/logs/index.md
     - Settings: 

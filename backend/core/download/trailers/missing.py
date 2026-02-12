@@ -1,6 +1,7 @@
 from app_logger import ModuleLogger
 from config.settings import app_settings
 from core.base.database.manager import trailerprofile
+import core.base.database.manager.event as event_manager
 import core.base.database.manager.media as media_manager
 from core.base.database.models.media import MediaRead
 from core.base.database.models.trailerprofile import TrailerProfileRead
@@ -38,12 +39,22 @@ def _is_valid_media(
                 f"Media '{db_media.title}' [{db_media.id}] skipped: missing"
                 " folder path."
             )
+            event_manager.track_download_skipped(
+                media_id=db_media.id,
+                skip_reason="Missing folder path",
+                source_detail="DownloadMissingTrailers",
+            )
             return False
 
         if not FilesHandler.check_folder_exists(db_media.folder_path):
             logger.info(
                 f"Media '{db_media.title}' [{db_media.id}] skipped: folder"
                 " does not exist."
+            )
+            event_manager.track_download_skipped(
+                media_id=db_media.id,
+                skip_reason="Folder does not exist",
+                source_detail="DownloadMissingTrailers",
             )
             return False
 
@@ -55,12 +66,22 @@ def _is_valid_media(
             f"Media '{db_media.title}' [{db_media.id}] skipped: missing folder"
             " path."
         )
+        event_manager.track_download_skipped(
+            media_id=db_media.id,
+            skip_reason="Missing media folder path",
+            source_detail="DownloadMissingTrailers",
+        )
         return False
 
     if not FilesHandler.check_media_exists(db_media.folder_path):
         logger.info(
             f"Media '{db_media.title}' [{db_media.id}] skipped: media file"
             " does not exist."
+        )
+        event_manager.track_download_skipped(
+            media_id=db_media.id,
+            skip_reason="Media file not found",
+            source_detail="DownloadMissingTrailers",
         )
         return False
 
