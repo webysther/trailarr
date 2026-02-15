@@ -2,7 +2,7 @@ import os
 import re
 import shutil
 import unicodedata
-import fnmatch
+import glob
 from app_logger import ModuleLogger
 from config.settings import app_settings
 from core.base.database.models.media import MediaRead
@@ -247,6 +247,8 @@ def move_trailer_to_folder(
     # Fixes https://github.com/nandyalu/trailarr/issues/285
     # Sometimes shutil.move fails when app only has write permissions without modify
     # The actual file will be moved but attributes won't be set in those cases
+    src_folder_path = os.path.dirname(src_path)
+    dst_folder_path = os.path.dirname(dst_file_path)
     try:
         # Move the file to destination
         shutil.move(src_path, dst_file_path)
@@ -256,6 +258,13 @@ def move_trailer_to_folder(
             f" '{oct(dst_permissions)}'"
         )
         os.chmod(dst_file_path, dst_permissions)
+
+        logger.debug("Checking for sidecar files")
+        for src_sidecar in glob.glob(os.path.splitext(src_path)[0] + "*"):
+            logger.debug(f"Sidecar found: {src_sidecar}")
+            dst_sidecar = src_sidecar.replace(src_folder_path, dst_folder_path)
+            shutil.move(src_sidecar, dst_sidecar)
+            os.chmod(dst_sidecar, dst_permissions)
     except Exception as e:
         # Check if file is copied to destination
         if not os.path.exists(dst_file_path):
@@ -268,32 +277,12 @@ def move_trailer_to_folder(
                 f"Failed to move trailer file to {dst_file_path}: {e}"
             )
 
-    # ---------------------------------------------------------------------
-    # Move associated subtitle files (e.g., .en.srt, pt.srt, ...)
-    # ---------------------------------------------------------------------
-    src_dir = os.path.dirname(src_path)
-    base_name = os.path.splitext(os.path.basename(src_path))[
-        0
-    ]
-    subtitle_pattern = f"{base_name}.*.srt"
-    for entry in os.listdir(src_dir):
-        if fnmatch.fnmatch(entry, subtitle_pattern):
-            sub_src = os.path.join(src_dir, entry)
-            sub_dst = os.path.join(dst_folder_path, entry)
-            try:
-                shutil.move(sub_src, sub_dst)
-                os.chmod(sub_dst, dst_permissions)
-                logger.debug(f"Moved subtitle '{entry}' to '{sub_dst}'")
-            except Exception as sub_e:
-                # Fallback copy similar to main file handling
-                if not os.path.exists(sub_dst):
-                    os.chmod(sub_src, dst_permissions)
-                    shutil.copyfile(sub_src, sub_dst)
-                if not os.path.exists(sub_dst):
-                    raise FileMoveFailedError(
-                        f"Failed to move subtitle file {sub_src} to {sub_dst}:"
-                        f" {sub_e}"
-                    )
+        logger.debug("Checking for sidecar files")
+        for src_sidecar in glob.glob(os.path.splitext(src_path)[0] + "*"):
+            logger.debug(f"Sidecar found: {src_sidecar}")
+            os.chmod(src_sidecar, dst_permissions)
+            dst_sidecar = src_sidecar.replace(src_folder_path, dst_folder_path)
+            shutil.copyfile(src_sidecar, dst_sidecar)
 
     logger.debug(f"Trailer moved successfully to folder: '{dst_folder_path}'")
     return dst_file_path
