@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 import unicodedata
+import fnmatch
 from app_logger import ModuleLogger
 from config.settings import app_settings
 from core.base.database.models.media import MediaRead
@@ -266,6 +267,33 @@ def move_trailer_to_folder(
             raise FileMoveFailedError(
                 f"Failed to move trailer file to {dst_file_path}: {e}"
             )
+
+    # ---------------------------------------------------------------------
+    # Move associated subtitle files (e.g., .en.srt, pt.srt, ...)
+    # ---------------------------------------------------------------------
+    src_dir = os.path.dirname(src_path)
+    base_name = os.path.splitext(os.path.basename(src_path))[
+        0
+    ]
+    subtitle_pattern = f"{base_name}.*.srt"
+    for entry in os.listdir(src_dir):
+        if fnmatch.fnmatch(entry, subtitle_pattern):
+            sub_src = os.path.join(src_dir, entry)
+            sub_dst = os.path.join(dst_folder_path, entry)
+            try:
+                shutil.move(sub_src, sub_dst)
+                os.chmod(sub_dst, dst_permissions)
+                logger.debug(f"Moved subtitle '{entry}' to '{sub_dst}'")
+            except Exception as sub_e:
+                # Fallback copy similar to main file handling
+                if not os.path.exists(sub_dst):
+                    os.chmod(sub_src, dst_permissions)
+                    shutil.copyfile(sub_src, sub_dst)
+                if not os.path.exists(sub_dst):
+                    raise FileMoveFailedError(
+                        f"Failed to move subtitle file {sub_src} to {sub_dst}:"
+                        f" {sub_e}"
+                    )
 
     logger.debug(f"Trailer moved successfully to folder: '{dst_folder_path}'")
     return dst_file_path
